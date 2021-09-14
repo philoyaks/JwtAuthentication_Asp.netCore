@@ -32,7 +32,7 @@ namespace Authentication_Authorization.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+            //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

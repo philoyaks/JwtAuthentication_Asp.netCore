@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Authentication_Authorization.Model;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,11 +7,24 @@ using System.Threading.Tasks;
 
 namespace Authentication_Authorization.Controllers
 {
-    public class UserController : Controller
+    [ApiController]
+    [Route("authenticate")]
+    public class UserController : ControllerBase
     {
-        public IActionResult Index()
+
+        [HttpPost]
+        public IActionResult Login(string username, string password)
         {
-            return View();
+            return Ok();
         }
+
+        [HttpPost]
+        public IActionResult Register([FromBody] User user)
+        {
+            return Ok(new { user, "sjsj" });
+        }
+
+
+
     }
 }

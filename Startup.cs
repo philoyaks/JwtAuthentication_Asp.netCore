@@ -1,3 +1,5 @@
+using Authentication_Authorization.Helpers;
+using Authentication_Authorization.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -29,8 +31,15 @@ namespace Authentication_Authorization
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+            //{
+            //    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //        .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+
+            services.AddSingleton<IMockRepoService, MockRepoService>();
+            services.AddSingleton<IAuthenticateService, AuthenticateService>();
+
+
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

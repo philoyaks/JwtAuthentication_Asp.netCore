@@ -8,28 +8,33 @@ namespace Authentication_Authorization.Services
 {
 
 
-    public interface IMockRepoServicee
+    public interface IMockRepoService
     {
-        User FindUser();
+        User FindUser(string Username, string Password);
         List<User> GetAllUsers();
 
-        User CreateUser();
+        User CreateUser(User user);
     }
-    public class MockRepoService : IMockRepoServicee
+    public class MockRepoService : IMockRepoService
     {
-        public User CreateUser()
+        public List<User> users { get; set; }
+        public User CreateUser(User user)
         {
-            throw new NotImplementedException();
+            users.Add(user);
+            return user;
         }
 
-        public User FindUser()
+        public User FindUser(string Username, string Password)
         {
-            throw new NotImplementedException();
+            var result = users.Where(x => x.Username == Username && x.Password == Password).FirstOrDefault();
+
+            return result;
+
         }
 
         public List<User> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return users;
         }
     }
 }
