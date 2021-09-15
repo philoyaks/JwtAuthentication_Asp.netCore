@@ -15,9 +15,19 @@ namespace Authentication_Authorization.Services
 
         User CreateUser(User user);
     }
+
+
     public class MockRepoService : IMockRepoService
     {
         public List<User> users { get; set; }
+
+
+
+
+        public MockRepoService()
+        {
+            users = new List<User> { };
+        }
         public User CreateUser(User user)
         {
             users.Add(user);
@@ -26,7 +36,15 @@ namespace Authentication_Authorization.Services
 
         public User FindUser(string Username, string Password)
         {
-            var result = users.Where(x => x.Username == Username && x.Password == Password).FirstOrDefault();
+            if (users.Count() < 1)
+            {
+                return null;
+            }
+            var result = users.Find(x => x.Username == Username && x.Password == Password);
+            if (result is null)
+            {
+                return new User();
+            }
 
             return result;
 

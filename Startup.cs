@@ -11,10 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Authentication_Authorization
@@ -31,15 +33,31 @@ namespace Authentication_Authorization
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //{
-            //    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //        .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
+            services.AddAuthentication(x =>
+            {
+
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }
+            ).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("JwtSettings").GetSection("SecretsKey").ToString())),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
             services.AddSingleton<IMockRepoService, MockRepoService>();
             services.AddSingleton<IAuthenticateService, AuthenticateService>();
 
 
-            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
